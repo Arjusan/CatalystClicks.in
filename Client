@@ -1,0 +1,118 @@
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { FaSearch, FaBullhorn, FaGlobe, FaAd, FaCheckCircle } from "react-icons/fa";
+
+const InquiryModal = ({ isOpen, onClose }) => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    const googleScriptURL = "https://script.google.com/macros/s/AKfycbw0owIgLhQwbFqWrULhEgtMykXuyKCvUvmv5hqI_3ROHFI4SYuWru_tItF5e3DUxjVd/exec";
+    try {
+      await fetch(googleScriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      alert("Form submitted successfully!");
+      setFormData({ name: "", email: "", message: "" });
+      onClose();
+    } catch (error) {
+      console.error("Error submitting form", error);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-4">Get in Touch</h2>
+        <input type="text" name="name" placeholder="Your Name" value={formData.name} onChange={handleChange} className="w-full p-2 border rounded mb-3" />
+        <input type="email" name="email" placeholder="Your Email" value={formData.email} onChange={handleChange} className="w-full p-2 border rounded mb-3" />
+        <textarea name="message" placeholder="Your Message" value={formData.message} onChange={handleChange} className="w-full p-2 border rounded mb-3" rows="4"></textarea>
+        <div className="flex justify-end space-x-2">
+          <Button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={onClose}>Close</Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" onClick={handleSubmit}>Submit</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Services = () => (
+  <div className="p-8">
+    <h2 className="text-3xl font-bold">Our Services</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      {[
+        { title: "SEO", description: "Optimize your site for search engines.", icon: <FaSearch /> },
+        { title: "Social Media Marketing", description: "Engage with customers on social platforms.", icon: <FaBullhorn /> },
+        { title: "Website Development", description: "Modern, responsive websites for your business.", icon: <FaGlobe /> },
+        { title: "Local Ads", description: "Target local customers effectively.", icon: <FaAd /> },
+      ].map((service, index) => (
+        <Card key={index} className="p-6 shadow-lg flex items-center bg-white text-black border border-gray-300">
+          <div className="text-4xl mr-4 text-blue-500">{service.icon}</div>
+          <CardContent>
+            <h3 className="text-xl font-bold text-gray-800">{service.title}</h3>
+            <p className="mt-2 text-gray-600">{service.description}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
+const WhyHireMe = () => (
+  <div className="p-8 bg-blue-50 rounded-lg shadow-lg text-center">
+    <h2 className="text-3xl font-bold text-blue-600">Why Choose Me?</h2>
+    <p className="mt-4 text-gray-700">I provide customized digital marketing solutions designed specifically for local businesses. Here’s why you should work with me:</p>
+    <div className="mt-4 flex flex-col items-center space-y-2 text-gray-700">
+      <div className="flex items-center"><FaCheckCircle className="text-blue-500 mr-2" /> Proven SEO and social media strategies</div>
+      <div className="flex items-center"><FaCheckCircle className="text-blue-500 mr-2" /> Tailored marketing plans for local businesses</div>
+      <div className="flex items-center"><FaCheckCircle className="text-blue-500 mr-2" /> Data-driven, transparent reporting</div>
+      <div className="flex items-center"><FaCheckCircle className="text-blue-500 mr-2" /> Cost-effective solutions with high ROI</div>
+    </div>
+  </div>
+);
+
+const App = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  return (
+    <div className="p-8 text-center bg-white text-black">
+      <motion.h1 className="text-5xl font-extrabold text-blue-600" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        Elevate Your Business Online
+      </motion.h1>
+      <p className="mt-4 text-lg text-gray-700">Helping local businesses thrive with expert digital marketing strategies.</p>
+      <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-md" onClick={() => setModalOpen(true)}>Get Started Today</Button>
+      
+      <InquiryModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      
+      <Services />
+      <WhyHireMe />
+      
+      <div className="p-8">
+        <h2 className="text-3xl font-bold">Contact Us</h2>
+        <p className="mt-4 text-gray-700">Have questions? Get in touch or book an appointment.</p>
+        <Button className="mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-md" onClick={() => setModalOpen(true)}>Inquire Now</Button>
+      </div>
+      
+      <footer className="p-6 bg-gray-900 text-white text-center mt-8 rounded-lg shadow-lg">
+        <p className="text-lg">&copy; 2025 Local Biz Growth. All rights reserved.</p>
+        <div className="mt-2 space-x-4">
+          <a href="#" className="underline">Facebook</a>
+          <a href="#" className="underline">Instagram</a>
+          <a href="#" className="underline">LinkedIn</a>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
